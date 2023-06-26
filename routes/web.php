@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\TaskController;
+use App\Models\Task;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +16,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $tasks = Task::orderBy('priority')->get();
+    return view('index', compact('tasks'));
 });
+
+// Route to handle all tasks urls
+Route::resource('tasks', TaskController::class);
+
+// Reorder tasks route
+Route::post('tasks/reorder', [TaskController::class, 'reorder'])->name('tasks.reorder');
