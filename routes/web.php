@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
+use App\Models\Project;
 use App\Models\Task;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,13 +18,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/', function (Request $request) {
+    $projectId = $request->input('project_id');
+    $projects = Project::all();
     $tasks = Task::orderBy('priority')->get();
-    return view('index', compact('tasks'));
+    return view('index', compact('tasks', 'projects', 'projectId'));
 });
 
 // Route to handle all tasks urls
-Route::resource('tasks', TaskController::class);
+Route::resources([
+    'tasks' => TaskController::class,
+    'projects' => ProjectController::class,
+]);
 
 // Reorder tasks route
 Route::post('tasks/reorder', [TaskController::class, 'reorder'])->name('tasks.reorder');
+Route::post('tasks/projectfilter', [TaskController::class, 'projectfilter'])->name('tasks.projectfilter');
+
+// Route::get('/projects/{project}', function (Project $project) {
+//     return view('tasks.index', ['project' => $project, 'tasks' => $project->tasks->orderBy('priority')->get()]);
+// })->name('project');

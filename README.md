@@ -1,66 +1,88 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<p align="center"><a style="font-size: 3rem; font-weight: bold; color:white;" href="https://laravel.com" target="_blank">Task Manager</a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## About Task Manager
 
-## About Laravel
+This is simple application where a user can view, create, edit, arrange, and delete tasks. The tasks have associated projects or the default (All Projects) project and you can view all tasks in all projects or view project specific tasks.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## How to Setup Up Project
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. Install Laravel
+2. Run the command below<br>
+   `$ laravel new taskmanager`<br>
+   `$ cd taskmanager`
+3. Create MySQL database and update the `.env` file with the credentials. I am using **Sqlite** in my example.
+   `DB_CONNECTION=sqlite`<br>
+   `DB_DATABASE=/absolute/path/to/database/taskmanager/database/database.sqlite`<br>
+   `DB_FOREIGN_KEYS=true`<br>
+4. Run Database migrations to create necessary tables <br>
+   `$ php artisan migrate`
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+5. Generate Task and Project Model and Migration<br>
+   `$ php artisan make:model Task --migration`<br>
+   `$ php artisan make:model Project --migration`
 
-## Learning Laravel
+6. Open the migrations and update with the necessary columns
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+7. Create the seeder files for Tasks and Projects. <br>
+   `$ php artisan make:seeder TaskSeeder`<br>
+   `$ php artisan make:seeder ProjectSeeder`
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+8. Run the migration to create the tables and seed the tables<br>
+   `$ php artisan migrate:fresh --seed`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+9. Update `web.php` to reflect the routes created using resources<br>
+   `Route::resource('tasks', TaskController::class);`
+   `Route::resource('projects', TaskController::class);`
 
-## Laravel Sponsors
+10. Build relationship between Task and Project in their Models
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+11. Update the blade files to show the necessary pages.
 
-### Premium Partners
+12. Add necessary initiators<br>
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+```<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-## Contributing
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-## Code of Conduct
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        fontFamily: {
+          inter: ["Inter", "san-serif"],
+        },
+      }
+    }
+  </script>
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+13. Serve your application<br>
+    `$ php artisan serve`
 
-## Security Vulnerabilities
+## How to Deploy
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+I am going to demonstrate how to deploy this project to cPanel. There are different pages on the web demostrating how to diploy to GitHub, Netlify, Firebase, and more. Following them would still help with deployin the app.
 
-## License
+1. Go the cPanel and select PHP version you want.
+2. Connect to the server, I like going to the terminal inside cPanel.
+3. Navigate to _public_html_ directory and create a folder named _composer_
+4. Install Composer (cPanels don't come with it)
+5. Upload the site to the cPanel, you can clone it from GitHub.
+6. Go to the project directory and run composer install
+7. Configure and migrate your database
+8. Configure webserver in cPanel in `public_html/.htaccess`.
+9. You should have you site uploaded successfully.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## References
+
+-   Laravel 10.x Documentation https://laravel.com/docs/10.x
+
+-   Install Composer in Namecheap and upload your site https://antonioufano.com/articles/deploy-a-laravel-7-app-to-shared-hosting-namecheap-26/
+
+*   Sortable Widget https://antonioufano.com/articles/deploy-a-laravel-7-app-to-shared-hosting-namecheap-26/

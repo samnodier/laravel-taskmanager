@@ -8,8 +8,6 @@
   <title>Laravel</title>
 
   <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.bunny.net">
-  <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,7 +37,11 @@
   <header class="py-7 bg-cyan-500 fixed w-full z-20 top-0 left-0">
     <h1 class="text-center text-3xl font-bold text-white"><a href="/">Task Manager</a></h1>
   </header>
-  <main class="mt-36">
+  <main class="mt-28">
+    <div class="px-10 mb-5 p-5 ml-2 text-cyan-600 space-x-5">
+      <a class="hover:underline" href="{{ route('tasks.index') }}">Tasks</a>
+      <a class="hover:underline" href="{{ route('projects.index') }}">Projects</a>
+    </div>
     {{ $slot }}
   </main>
   <footer class="py-10 bg-cyan-500 text-center">

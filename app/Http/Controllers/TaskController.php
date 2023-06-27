@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
@@ -10,10 +11,18 @@ class TaskController extends Controller
     /**
      * Display a listing of the task.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tasks = Task::orderBy('priority')->get();
-        return view('index', compact('tasks'));
+        $projectId = $request->input('project_id');
+        $projects = Project::all();
+
+        if ($projectId) {
+            $tasks = Task::where('project_id', $projectId)->orderBy('priority')->get();
+        } else {
+            $tasks = Task::orderBy('priority')->get();
+        }
+
+        return view('tasks.index', compact('tasks', 'projects', 'projectId'));
     }
 
     /**
@@ -21,7 +30,8 @@ class TaskController extends Controller
      */
     public function create()
     {
-        return view('tasks.create');
+        $projects = Project::all();
+        return view('tasks.create', compact('projects'));
     }
 
     /**
@@ -30,11 +40,13 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required:max:250',
+            'name' => 'required|max:250',
+            'project_id' => 'required'
         ]);
         $task = new Task();
         $task->name = $validated['name'];
         $task->priority = Task::max('priority') + 1;
+        $task->project_id = $validated['project_id'];
         $task->save();
 
         return redirect()->route('tasks.index');
@@ -45,7 +57,7 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-        return view('tasks.edit', compact('task'));
+        abort(404);
     }
 
     /**
@@ -53,7 +65,8 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        return view('tasks.edit', compact('task'));
+        $projects = Project::all();
+        return view('tasks.edit', compact('projects', 'task'));
     }
 
     /**
@@ -62,10 +75,12 @@ class TaskController extends Controller
     public function update(Request $request, Task $task)
     {
         $validated = $request->validate([
-            'name' => 'required|max:250'
+            'name' => 'required|max:250',
+            'project_id' => 'required'
         ]);
 
         $task->name = $validated['name'];
+        $task->project_id = $validated['project_id'];
         $task->save();
 
         return redirect()->route('tasks.index');
@@ -76,7 +91,16 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
+        $deletedPriority = $task->priority;
         $task->delete();
+
+        $remainingTasks = Task::orderBy('priority')->get();
+        $priority = 1;
+        foreach ($remainingTasks as $remainingTask) {
+            $remainingTask->priority = $priority;
+            $remainingTask->save();
+            $priority++;
+        }
 
         return redirect()->route('tasks.index');
     }

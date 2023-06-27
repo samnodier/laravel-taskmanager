@@ -12,7 +12,7 @@
     </div>
   </div>
   <div class="font-semibold text-sm space-x-2 flex no-wrap">
-    <a href="{{ route('tasks.edit', $task) }}" class="bg-cyan-500 text-white rounded-md px-4 py-1.5">Done</a>
+    <a href="{{ route('tasks.edit', $task) }}" class="bg-cyan-500 text-white rounded-md px-4 py-1.5">Edit</a>
     <form action="{{ route('tasks.destroy', $task) }}" method="POST">
       @csrf
       @method('DELETE')
